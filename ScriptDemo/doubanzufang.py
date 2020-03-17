@@ -34,7 +34,7 @@ def get_renting_info():
 
 # 定义定时任务
 def my_job():
-    send_mail.send('fandu@pinduoduo.com', '豆瓣租房推送', get_renting_info())
+    send_mail.send('litt1er@163.com', '豆瓣租房推送', get_renting_info())
 
 if __name__ == '__main__':
     schedule.every(5).minutes.do(my_job)
