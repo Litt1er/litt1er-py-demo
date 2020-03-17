@@ -4,6 +4,8 @@
 import requests
 import bs4
 import send_mail
+import schedule
+import time
 
 
 request_url = 'https://www.douban.com/group/shanghaizufang/discussion?start=start_index'
@@ -23,16 +25,19 @@ def get_renting_info():
         links = soup.select('td.title > a')
         for title, link in zip(titles, links):
             if ('娄山关路' in title.get('title')):
-                # data = {
-                #     'title': title.get('title'),
-                #     'link': link.get('href')
-                # }
-                data = f'title='+title.get('title')+'link='+link.get('href')
+                data = title.get('title')+link.get('href')
                 renting_list.append(data)
 
         start_index = start_index + 25
 
     return renting_list
 
+# 定义定时任务
+def my_job():
+    send_mail.send('fandu@pinduoduo.com', '豆瓣租房推送', get_renting_info())
+
 if __name__ == '__main__':
-    send_mail.send('1572503013@qq.com', '豆瓣租房推送', get_renting_info())
+    schedule.every(5).minutes.do(my_job)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
